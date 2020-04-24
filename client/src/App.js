@@ -1,45 +1,36 @@
 import React from 'react';
-import styled from 'styled-components/macro';
+import { Route, BrowserRouter as Router } from 'react-router-dom';
 
 import ApolloClient from 'apollo-client';
 import { ApolloProvider } from 'react-apollo';
-import SongList from './components/SongList';
 
-import GlobalStyles from './GlobalStyles';
-import { setColor, setFont, centerText } from './styles';
-import { InMemoryCache } from "apollo-cache-inmemory";
-import { HttpLink } from "apollo-link-http";
+import { InMemoryCache } from 'apollo-cache-inmemory';
+import { HttpLink } from 'apollo-link-http';
+
+import Dashboard from './components/Dashboard';
+import SongCreate from './components/SongCreate';
 
 const cache = new InMemoryCache();
 const link = new HttpLink({
-  uri: "http://localhost:4000/graphql"
+	uri: 'http://localhost:4000/graphql'
 });
 
 const client = new ApolloClient({
-  cache,
-  link
+	cache,
+	link
 });
 
 function App () {
 	return (
-		<React.Fragment>
-			<ApolloProvider client={client}>
-				<StyledApp>
-					<GlobalStyles />
-					<SongList />
-				</StyledApp>
-			</ApolloProvider>
-		</React.Fragment>
+		<ApolloProvider client={client}>
+			<Router>
+				<section className='container'>
+					<Route exact path='/' component={Dashboard} />
+					<Route path='/song/new' component={SongCreate} />
+				</section>
+			</Router>
+		</ApolloProvider>
 	);
 }
 
 export default App;
-
-const StyledApp = styled.div`
-	${centerText};
-	background-color: ${setColor.bkgndMain};
-`;
-
-const StyledP = styled.p`${setFont.primary};`;
-
-const StyledH2 = styled.h2`${setFont.primary};`;
