@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, BrowserRouter as Router } from 'react-router-dom';
+import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
 
 import ApolloClient from 'apollo-client';
 import { ApolloProvider } from 'react-apollo';
@@ -9,6 +9,7 @@ import { HttpLink } from 'apollo-link-http';
 
 import Dashboard from './components/Dashboard';
 import SongCreate from './components/SongCreate';
+import SongDetail from './components/SongDetail';
 
 const cache = new InMemoryCache();
 const link = new HttpLink({
@@ -25,8 +26,11 @@ function App () {
 		<ApolloProvider client={client}>
 			<Router>
 				<section className='container'>
-					<Route exact path='/' component={Dashboard} />
-					<Route path='/song/new' component={SongCreate} />
+					<Switch>
+						<Route exact path='/' component={Dashboard} />
+						<Route path='/songs/new' component={SongCreate} />
+						<Route path='/songs/:id' component={SongDetail} />
+					</Switch>
 				</section>
 			</Router>
 		</ApolloProvider>

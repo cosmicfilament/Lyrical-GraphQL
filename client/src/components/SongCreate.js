@@ -1,28 +1,39 @@
 import React, { useState } from 'react';
+import { Link, useHistory } from 'react-router-dom';
 import { graphql } from 'react-apollo';
-import gql from 'graphql-tag';
+
+import fetchSongsQuery from '../shared/graphql/fetchSongs';
+import addSongMutation from '../shared/graphql/addSong';
 
 const SongCreate = props => {
 	const [ title, setTitle ] = useState('');
+
+	const history = useHistory();
 
 	const handleOnChange = event => {
 		setTitle(event.target.value);
 	};
 
-	const handleFormSubmit = event => {
+	const handleOnSubmit = event => {
 		event.preventDefault();
-		console.log(`submit SongCreate form: ${props}`);
-		props.mutate({
-			variables: {
-				title: title
-			}
-		});
+		props
+			.mutate({
+				variables: {
+					title: title
+				},
+				refetchQueries: () => [ { query: fetchSongsQuery } ],
+				awaitrefetch: true
+			})
+			.then(() => {
+				history.push('/');
+			});
 	};
 
 	return (
 		<div>
+			<Link to='/'>Back</Link>
 			<h3>Create a New Song</h3>
-			<form onSubmit={handleFormSubmit}>
+			<form onSubmit={handleOnSubmit}>
 				<label>Enter the Song Title:</label>
 				<input className='input-field' onChange={handleOnChange} value={title} />
 			</form>
@@ -30,11 +41,4 @@ const SongCreate = props => {
 	);
 };
 
-const mutation = gql`
-	mutation AddSong($title: String) {
-		addSong(title: $title) {
-			title
-		}
-	}
-`;
-export default graphql(mutation)(SongCreate);
+export default graphql(addSongMutation)(SongCreate);
