@@ -1,23 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { graphql } from 'react-apollo';
-import fetchSongsQuery from '../shared/graphql/fetchSongs';
-import deleteSongMutation from '../shared/graphql/deleteSong';
 
-import '../shared/styles/styles.css';
+import fetchSongsQuery from '../../shared/graphql/fetchSongs';
+import deleteSongMutation from '../../shared/graphql/deleteSong';
 
 const SongList = props => {
-	const [ songs, loadSongs ] = useState([]);
+	const _songs = props.data.songs;
 
-	useEffect(
-		() => {
-			if (props.data.loading) {
-				return loadSongs([]);
-			}
-			loadSongs(props.data.songs);
-		},
-		[ props.data ]
-	);
+	if (!_songs) {
+		return <div>Loading ....</div>;
+	}
 
 	const onDeleteSong = id => {
 		props.mutate({ variables: { id } }).then(() => props.data.refetch());
@@ -25,8 +18,8 @@ const SongList = props => {
 
 	return (
 		<div>
-			<ul className='collection'>
-				{songs.map(song => {
+			<ul className='collection highlight-list'>
+				{_songs.map(song => {
 					return (
 						<li key={song.id} className='collection-item'>
 							<Link to={`/songs/${song.id}`}>{song.title}</Link>

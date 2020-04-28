@@ -1,27 +1,24 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { graphql } from 'react-apollo';
-import fetchSongDetailQuery from '../shared/graphql/fetchSongDetail';
+
+import fetchSongDetailQuery from '../../shared/graphql/fetchSongDetail';
 import LyricCreate from './LyricCreate';
+import LyricList from './LyricList';
 
 const SongDetail = props => {
-	const [ song, loadSong ] = useState({});
+	const _song = props.data.song;
 
-	useEffect(
-		() => {
-			if (props.data.loading) {
-				return loadSong({ title: 'Loading...' });
-			}
-			loadSong(props.data.song);
-		},
-		[ props.data ]
-	);
+	if (!_song) {
+		return <div>Loading ....</div>;
+	}
 
 	return (
 		<div>
 			<Link to='/'>Back</Link>
-			<h3>{song.title}</h3>
-			<LyricCreate />
+			<h3>{_song.title}</h3>
+			<LyricList lyrics={_song.lyrics} />
+			<LyricCreate songId={_song.id} />
 		</div>
 	);
 };

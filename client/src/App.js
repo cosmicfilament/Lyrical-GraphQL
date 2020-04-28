@@ -7,13 +7,14 @@ import { ApolloProvider } from 'react-apollo';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { HttpLink } from 'apollo-link-http';
 
-import Dashboard from './components/Dashboard';
-import SongCreate from './components/SongCreate';
-import SongDetail from './components/SongDetail';
+import Dashboard from './components/Dashboard/DashboardPage';
+import SongCreate from './components/SongCreate/SongCreatePage';
+import SongDetail from './components/SongDetail/SongDetailPage';
 
-const cache = new InMemoryCache();
+const cache = new InMemoryCache({});
+
 const link = new HttpLink({
-	uri: 'http://localhost:4000/graphql'
+	uri: 'http://172.25.205.83:4000/graphql'
 });
 
 const client = new ApolloClient({
